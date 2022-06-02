@@ -46,21 +46,11 @@ export default {
       this.$nextTick(() => this.$el.focus())
       this.show = true
     },
-    keysListener(evt) {
-      console.log(evt.keyCode)
-    },
-
-    clickHandler(evt) {
-      console.log(evt.target)
-    },
   },
   mounted() {
-    document.addEventListener('keyup', this.keysListener)
     document.addEventListener('scroll', this.close)
-    // document.addEventListener('click', this.clickHandler)
   },
   beforeDestroy() {
-    document.removeEventListener('keyup', this.keysListener)
     document.removeEventListener('scroll', this.close)
   },
 }

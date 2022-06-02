@@ -50,51 +50,53 @@
       </div>
     </div>
     <template v-if="manager.use">
-      <div class="calculator_block" v-if="!closed">
-        <div
-          class="label_price_block"
-          v-for="option in manager.options"
-          :key="option.id"
-        >
-          <label
-            ><input
-              type="checkbox"
-              class="radio"
-              :disabled="option.readOnly"
-              :checked="option.readOnly"
-              v-model="option.useField"
-            /><span class="checked"></span>{{ option.label }}</label
+      <transition-expand>
+        <div class="calculator_block" v-if="!closed">
+          <div
+            class="label_price_block"
+            v-for="option in manager.options"
+            :key="option.id"
           >
-          <div class="border_price"></div>
-          <div class="label_price">
-            <span class="price-prefix">{{ option.pricePrefix }}</span>
-            <span class="price">{{ option.price }}</span>
-            <span class="currency"> руб.</span>
+            <label
+              ><input
+                type="checkbox"
+                class="radio"
+                :disabled="option.readOnly"
+                :checked="option.readOnly"
+                v-model="option.useField"
+              /><span class="checked"></span>{{ option.label }}</label
+            >
+            <div class="border_price"></div>
+            <div class="label_price">
+              <span class="price-prefix">{{ option.pricePrefix }}</span>
+              <span class="price">{{ option.price }}</span>
+              <span class="currency"> руб.</span>
+            </div>
           </div>
-        </div>
 
-        <!-- Instruments -->
-        <p>С использованием техники:</p>
-        <div
-          class="label_price_block"
-          v-for="device in manager.devices"
-          :key="device.id"
-        >
-          <label
-            ><input
-              type="checkbox"
-              class="radio"
-              v-model="device.useField"
-            /><span class="checked"></span>{{ device.label }}</label
+          <!-- Instruments -->
+          <p>С использованием техники:</p>
+          <div
+            class="label_price_block"
+            v-for="device in manager.devices"
+            :key="device.id"
           >
-          <div class="border_price"></div>
-          <div class="label_price">
-            <span class="price-prefix">{{ device.pricePrefix }}</span>
-            <span class="price">{{ device.price }}</span>
-            <span class="currency"> руб.</span>
+            <label
+              ><input
+                type="checkbox"
+                class="radio"
+                v-model="device.useField"
+              /><span class="checked"></span>{{ device.label }}</label
+            >
+            <div class="border_price"></div>
+            <div class="label_price">
+              <span class="price-prefix">{{ device.pricePrefix }}</span>
+              <span class="price">{{ device.price }}</span>
+              <span class="currency"> руб.</span>
+            </div>
           </div>
         </div>
-      </div>
+      </transition-expand>
     </template>
   </div>
 </template>
@@ -103,6 +105,7 @@
 import Manager from '@/models/manager'
 import ContextMenu from '@/components/ContextMenu.vue'
 import { uuid } from '@/utils'
+import TransitionExpand from './TransitionExpand.vue'
 export default {
   name: 'PlaceManager',
   props: {
@@ -126,7 +129,7 @@ export default {
       default: 0,
     },
   },
-  components: { ContextMenu },
+  components: { ContextMenu, TransitionExpand },
   data() {
     return {
       manager: new Manager(this.price),
@@ -248,6 +251,7 @@ export default {
     height: 100%;
     padding: 4px 12px;
     margin-bottom: 6px;
+    display: block;
   }
   &.is-disabled {
     cursor: not-allowed;
