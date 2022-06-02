@@ -4,11 +4,13 @@
       <h2>Расчет сотрудников для уборки</h2>
       <div class="place" v-for="place in places" :key="place.id">
         <div class="place-head">
-          <span class="icon" @click.prevent="togglePlace(place.id)">
+          <span class="icon" @click.prevent.stop="togglePlace(place.id)">
             <place-status :open="place.active" />
           </span>
           <h3>{{ place.label }}</h3>
-          <span class="dots" v-if="!place.active">&hellip;</span>
+          <span class="dots" v-if="!place.active && ifExtraManagers(place.id)"
+            >&hellip;</span
+          >
         </div>
         <div class="block" v-if="place.active">
           <div class="actions" v-if="canAdd(place.id)">
@@ -24,6 +26,8 @@
             @new:proposal="addProposal"
             @change:status="updateManager"
             @remove:manager="removeManager"
+            @add:manager="addManager"
+            :price="place.price"
             v-for="(manager, index) in getManagers(place.id)"
             :count="index + 1"
             :id="manager.id"
@@ -60,6 +64,10 @@ export default {
   },
   settings,
   methods: {
+    ifExtraManagers(placeId) {
+      return this.managers.filter((manager) => manager.placeId === placeId)
+        .length
+    },
     getManagers(placeId) {
       return this.managers.filter((manager) => manager.placeId === placeId)
     },
@@ -128,6 +136,7 @@ export default {
           active: false,
           name: place.name,
           label: place.label,
+          price: place.price,
         })
       })
     },
@@ -159,7 +168,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -211,7 +220,7 @@ export default {
 }
 .place-head {
   padding: 8px 15px;
-  background-color: #018bd5;
+  background-color: $main-color;
   border-radius: 8px;
   display: flex;
   align-items: center;
