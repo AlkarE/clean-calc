@@ -99,7 +99,6 @@ export default {
     },
     // divider
     removeManager(id) {
-      console.log(id)
       const managerIndex = this.managers.findIndex(
         (manager) => manager.id === id
       )
