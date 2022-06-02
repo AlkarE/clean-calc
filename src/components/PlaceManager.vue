@@ -15,17 +15,42 @@
           </strong>
         </span>
       </label>
-      <button
-        type="button"
-        class="btn-remove"
-        @click.prevent="removeManager"
-        v-if="count !== 1"
-      >
-        <span style="font-size: 16px">&ndash; &nbsp;</span> Удалить
-      </button>
+      <div class="menu-container">
+        <button
+          type="button"
+          @click.prevent="showManagerMenu"
+          class="btn btn-round"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 29.96 122.88"
+            class="dots-icon"
+          >
+            <path
+              d="M15,0A15,15,0,1,1,0,15,15,15,0,0,1,15,0Zm0,92.93a15,15,0,1,1-15,15,15,15,0,0,1,15-15Zm0-46.47a15,15,0,1,1-15,15,15,15,0,0,1,15-15Z"
+            />
+          </svg>
+        </button>
+        <context-menu ref="menu">
+          <ul class="actions-menu menu">
+            <li class="menu-item">
+              <a class="btn" @click="removeManager">Remove</a>
+            </li>
+            <li class="menu-item">
+              <a class="btn" @click="addManager">Duplicate</a>
+            </li>
+            <li class="menu-item">
+              <a class="btn" @click="showManager">Show</a>
+            </li>
+            <li class="menu-item">
+              <a class="btn" @click="closeManager">Hide</a>
+            </li>
+          </ul>
+        </context-menu>
+      </div>
     </div>
     <template v-if="manager.use">
-      <div class="calculator_block">
+      <div class="calculator_block" v-if="!closed">
         <div
           class="label_price_block"
           v-for="option in manager.options"
@@ -76,6 +101,7 @@
 
 <script>
 import Manager from '@/models/manager'
+import ContextMenu from '@/components/ContextMenu.vue'
 import { uuid } from '@/utils'
 export default {
   name: 'PlaceManager',
@@ -95,15 +121,37 @@ export default {
       default: '',
       required: true,
     },
+    price: {
+      type: Number,
+      default: 0,
+    },
   },
+  components: { ContextMenu },
   data() {
     return {
-      manager: new Manager(),
+      manager: new Manager(this.price),
+      closed: false,
     }
   },
   methods: {
+    closeManager() {
+      this.closed = true
+      this.$refs.menu.close()
+    },
+    showManager() {
+      this.closed = false
+      this.$refs.menu.close()
+    },
+    addManager() {
+      this.$emit('add:manager', this.placeId)
+      this.$refs.menu.close()
+    },
+    showManagerMenu(evt) {
+      this.$refs.menu.open(evt)
+    },
     removeManager() {
       this.$emit('remove:manager', this.id)
+      this.$refs.menu.close()
     },
     prepareOrder() {
       // приходящий сотрудник
@@ -148,8 +196,16 @@ export default {
       })
     },
   },
+  computed: {
+    isDisabled() {
+      return this.count === 1
+    },
+  },
   watch: {
     'manager.use': 'changeStatus',
+    price: function (price) {
+      this.manager.basePrice = price
+    },
     manager: {
       handler: 'prepareOrder',
       deep: true,
@@ -159,7 +215,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+.dots-icon {
+  width: 12px;
+  height: 16px;
+}
 .label_main {
   user-select: none;
   justify-content: space-between;
@@ -172,5 +232,53 @@ export default {
   width: 100%;
   padding: 2px 0;
   margin-bottom: 15px;
+}
+.menu-container {
+  position: relative;
+}
+.menu {
+  list-style-type: none;
+  width: 120px;
+  border-radius: 8px;
+}
+.menu-item {
+  line-height: 1.8;
+  .btn {
+    width: 100%;
+    height: 100%;
+    padding: 4px 12px;
+    margin-bottom: 6px;
+  }
+  &.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    a {
+      pointer-events: none;
+    }
+  }
+}
+.menu-item:last-child {
+  margin-bottom: 0;
+}
+.menu-item:hover {
+  background-color: #f1f1f1;
+}
+.btn {
+  border: none;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.btn-round {
+  height: 30px;
+  width: 30px;
+  margin-right: 16px;
+  border-radius: 50%;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-round:hover {
+  background-color: #ccc;
 }
 </style>
