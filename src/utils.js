@@ -15,6 +15,11 @@ export const settings = {
       label: 'Уборка территории',
       price: 53000,
     },
+    {
+      name: 'partTime',
+      label: 'График 5/7',
+      price: 63000,
+    },
   ],
 }
 
