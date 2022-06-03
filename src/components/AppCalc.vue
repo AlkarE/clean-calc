@@ -38,7 +38,12 @@
       </div>
     </div>
     <br />
-    <order-results :orders="orders" :currency="$options.currency" />
+    <button class="btn btn-info" @click="showResults">
+      Посмотреть калькуляляцию
+    </button>
+    <app-modal ref="modal">
+      <order-results :orders="orders" :currency="$options.currency" />
+    </app-modal>
   </div>
 </template>
 
@@ -48,12 +53,14 @@ import PlaceManager from '@/components/PlaceManager.vue'
 
 import { uuid, settings } from '@/utils'
 import PlaceStatus from './PlaceStatus.vue'
+import AppModal from './AppModal.vue'
 export default {
   name: 'AppCalc',
   components: {
     OrderResults,
     PlaceManager,
     PlaceStatus,
+    AppModal,
   },
   data: function () {
     return {
@@ -64,6 +71,9 @@ export default {
   },
   settings,
   methods: {
+    showResults() {
+      this.$refs.modal.open()
+    },
     ifExtraManagers(placeId) {
       return this.managers.filter((manager) => manager.placeId === placeId)
         .length
@@ -173,43 +183,73 @@ export default {
   justify-content: flex-end;
   padding: 15px 0;
 }
-.btn-add {
-  display: flex;
-  height: 34px;
-  padding: 0 12px;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  cursor: pointer;
-
+.btn {
   border: none;
-  border-radius: 4px;
-  background-color: #018bd5;
-  font-size: 18px;
-  transition: background-color 0.3s;
-}
-.btn-remove {
-  display: flex;
-  height: 30px;
-  padding: 0 12px;
-  align-items: center;
-  justify-content: center;
-  color: white;
+  transition: all 0.3s;
   cursor: pointer;
+  &.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    a {
+      pointer-events: none;
+    }
+  }
+  &-close {
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: #eee;
+  }
+  &-info {
+    padding: 8px 12px;
+  }
+  &-round {
+    height: 30px;
+    width: 30px;
+    margin-right: 16px;
+    border-radius: 50%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+      background-color: #ccc;
+    }
+  }
+  &-add {
+    display: flex;
+    height: 34px;
+    padding: 0 12px;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border-radius: 4px;
+    background-color: #018bd5;
+    font-size: 18px;
+    transition: background-color 0.3s;
+    &:hover {
+      background-color: #0081c9;
+    }
+  }
+  &-remove {
+    display: flex;
+    height: 30px;
+    padding: 0 12px;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border-radius: 4px;
+    background-color: #d72155;
+    font-size: 12px;
+    transition: background-color 0.3s;
+    margin-right: 15px;
+    &:hover {
+      background-color: #d6144b;
+    }
+  }
+}
 
-  border: none;
-  border-radius: 4px;
-  background-color: #d72155;
-  font-size: 12px;
-  transition: background-color 0.3s;
-  margin-right: 15px;
-}
-.btn-remove:hover {
-  background-color: #d6144b;
-}
-.btn-add:hover {
-  background-color: #0081c9;
-}
 .hidden {
   display: none;
 }

@@ -246,19 +246,12 @@ export default {
 }
 .menu-item {
   line-height: 1.8;
+  margin-bottom: 4px;
   .btn {
     width: 100%;
     height: 100%;
     padding: 4px 12px;
-    margin-bottom: 6px;
     display: block;
-  }
-  &.is-disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-    a {
-      pointer-events: none;
-    }
   }
 }
 .menu-item:last-child {
@@ -266,23 +259,5 @@ export default {
 }
 .menu-item:hover {
   background-color: #f1f1f1;
-}
-.btn {
-  border: none;
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.btn-round {
-  height: 30px;
-  width: 30px;
-  margin-right: 16px;
-  border-radius: 50%;
-  background-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.btn-round:hover {
-  background-color: #ccc;
 }
 </style>
